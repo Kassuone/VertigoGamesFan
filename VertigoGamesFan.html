@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertigo Games 顶级VR玩家社区</title>
+    <style>
+        :root {
+            --primary: #ff4e00; /* Logo 主红 */
+            --secondary: #ff8e00; /* Logo 主橙 */
+            --accent: #ffd200;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            overflow-x: hidden;
+            /* 动态背景特效 */
+            background: radial-gradient(circle at 50% -20%, #441a00, #050505 60%);
+        }
+
+        /* 呼吸背景特效 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        /* 顶部 Logo 区域 */
+        header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            position: relative;
+        }
+
+        .logo-wrap {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+        }
+
+        .main-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: logoFloat 4s infinite ease-in-out;
+            z-index: 2;
+            position: relative;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .logo-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(to bottom, #fff 30%, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        /* 游戏列表容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            margin: 60px 0 30px;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            text-shadow: 0 0 10px rgba(255, 78, 0, 0.5);
+        }
+
+        .category-title::before {
+            content: "▶";
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        /* 卡片流光效果 */
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 40px rgba(255, 78, 0, 0.3);
+        }
+
+        /* 卡片悬停流光边框动画 */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+        .card:hover::after { left: 100%; }
+
+        .game-cn {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .game-en {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .game-desc {
+            font-size: 0.95rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 4px 12px;
+            background: rgba(255, 78, 0, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+
+        /* 加群面板 */
+        .join-panel {
+            margin: 100px auto;
+            max-width: 900px;
+            background: linear-gradient(135deg, #1a0a00 0%, #000 100%);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 78, 0, 0.2);
+        }
+
+        .qr-box {
+            width: 220px;
+            height: 220px;
+            background: #fff;
+            margin: 30px auto;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px var(--primary);
+        }
+
+        .btn-cta {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 18px 50px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 78, 0, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding-bottom: 50px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.3; }
+        }
+
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-glow"></div>
+        <div class="logo-wrap">
+            <!-- 直接引用您提供的图片地址 -->
+            <img src="https://kassuone.github.io/123/1770980268578(1).png" alt="Vertigo Games Logo" class="main-logo">
+        </div>
+        <h1>Vertigo Games</h1>
+        <div class="subtitle">沉浸式 VR 游戏专家 · 官方粉丝同好交流群</div>
+    </header>
+
+    <div class="container">
+        
+        <!-- 核心自研 FPS -->
+        <h2 class="category-title">核心自研 FPS (王牌射击)</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="game-cn">亚利桑那阳光 2</span>
+                <span class="game-en">Arizona Sunshine 2</span>
+                <p class="game-desc">2023 巅峰续作。更大的世界、更爽快的肉搏、以及最忠诚的狗狗搭档。</p>
+                <span class="tag">旗舰新作 / 2023</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">地铁：觉醒</span>
+                <span class="game-en">Metro Awakening</span>
+                <p class="game-desc">2024 年度级大作。深入莫斯科地铁站，体验顶级沉浸感的史诗剧情与潜行战斗。</p>
+                <span class="tag">重磅独占 / 2024</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">灭亡之后</span>
+                <span class="game-en">After the Fall</span>
+                <p class="game-desc">VR 界的“求生之路”。支持 4 人跨平台联机，在冷战末世对抗变异寒霜。 </p>
+                <span class="tag">4人联机 / PvPvE</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">亚利桑那阳光 (原版)</span>
+                <span class="game-en">Arizona Sunshine</span>
+                <p class="game-desc">2016 行业标杆。僵尸生存 FPS 的先驱，多人合作的 VR 必玩经典名作。</p>
+                <span class="tag">经典永恒 / 2016</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">亚利桑那阳光：重制版</span>
+                <span class="game-en">Arizona Sunshine Remake</span>
+                <p class="game-desc">次世代重塑。全面提升的视觉效果与交互体验，完美适配 PSVR2/Quest 3。</p>
+                <span class="tag">画质升级 / 2024</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">地狱扫荡者</span>
+                <span class="game-en">Hellsweeper VR</span>
+                <p class="game-desc">肉鸽动作 FPS。掌握魔法球与冷兵器，在地狱深渊进行超高机动性战斗。</p>
+                <span class="tag">动作肉鸽 / 2023</span>
+            </div>
+        </div>
+
+        <!-- 解谜/潜行 -->
+        <h2 class="category-title">解谜、潜行与探险</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="game-cn">神偷 VR：影子遗产</span>
+                <span class="game-en">Thief VR: Legacy of Shadow</span>
+                <p class="game-desc">2025 期待作。潜行类游戏的鼻祖回归，在 VR 中体验最真实的“影子漫步”。</p>
+                <span class="tag">潜行大作 / 2025</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">第七访客 VR</span>
+                <span class="game-en">The 7th Guest VR</span>
+                <p class="game-desc">解谜经典重制。幽灵宅邸、离奇谜题，沉浸式互动电影般的解谜体验。</p>
+                <span class="tag">烧脑解谜 / 2023</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">渔夫的故事 2</span>
+                <span class="game-en">Another Fisherman's Tale</span>
+                <p class="game-desc">突破空间的奇幻解谜。拆解自己的身体部分来解决谜题，创意满分。</p>
+                <span class="tag">创意解谜 / 发行</span>
+            </div>
+        </div>
+
+        <!-- 音乐/休闲 -->
+        <h2 class="category-title">节奏、休闲与经典发行</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="game-cn">不插电：空气吉他</span>
+                <span class="game-en">Unplugged VR</span>
+                <p class="game-desc">黑科技手势识别。无需手柄，空手弹奏摇滚名曲，化身摇滚之神。</p>
+                <span class="tag">手势识别 / 音乐</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">交通指挥</span>
+                <span class="game-en">Traffic Jams</span>
+                <p class="game-desc">胡闹模拟类精品。在世界各地指挥（或者制造）混乱的交通秩序。</p>
+                <span class="tag">休闲 / 搞怪模拟</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">天界：王国纷争</span>
+                <span class="game-en">Skyworld / Kingdom Brawl</span>
+                <p class="game-desc">回合制策略与卡牌。在方寸沙盘之上，体验排兵布阵的指挥快感。</p>
+                <span class="tag">策略 / 竞技</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">过山车战斗</span>
+                <span class="game-en">Coaster Combat</span>
+                <p class="game-desc">极致的速度与精准的射击，体验最刺激的轨道战斗体验。</p>
+                <span class="tag">轨道射击</span>
+            </div>
+
+            <div class="card">
+                <span class="game-cn">巫师：黑暗时代</span>
+                <span class="game-en">The Wizards - Dark Times: Brotherhood</span>
+                <p class="game-desc">手势施法动作 RPG。与好友组队，用双手划出符文，释放强大魔法。</p>
+                <span class="tag">魔法动作 / 发行</span>
+            </div>
+        </div>
+
+        <!-- 加群 -->
+        <div class="join-panel">
+            <h2>🔥 加入 VERTIGO GAMES 粉丝集结地</h2>
+            <p style="margin-top:15px; color:#aaa;">第一时间获取大厂动态、联机交友、游戏汉化补丁</p>
+            <div class="qr-box">
+                <!-- 请此处放入您的群二维码图片 -->
+                <img src="https://kassuone.github.io/123/IMG_20260214_111612.jpg" alt="扫码加群" style="width:100%">
+            </div>
+            <p style="font-size:0.9rem; color:var(--secondary);">长按二维码识别 或 点击下方按钮</p>
+            <a href="#" class="btn-cta">立即加入玩家社区</a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; Vertigo Games Fan Community | Powered by PLAION Fans
+    </footer>
+
+</body>
+</html>
